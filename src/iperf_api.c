@@ -3646,6 +3646,7 @@ iperf_new_stream(struct iperf_test *test, int s, int sender)
 
     sp = (struct iperf_stream *) malloc(sizeof(struct iperf_stream));
     if (!sp) {
+        printf("error: step 1\n");
         i_errno = IECREATESTREAM;
         return NULL;
     }
@@ -3657,6 +3658,7 @@ iperf_new_stream(struct iperf_test *test, int s, int sender)
     sp->settings = test->settings;
     sp->result = (struct iperf_stream_result *) malloc(sizeof(struct iperf_stream_result));
     if (!sp->result) {
+        printf("error: step 2\n");
         free(sp);
         i_errno = IECREATESTREAM;
         return NULL;
@@ -3668,18 +3670,21 @@ iperf_new_stream(struct iperf_test *test, int s, int sender)
     /* Create and randomize the buffer */
     sp->buffer_fd = mkstemp(template);
     if (sp->buffer_fd == -1) {
+        printf("error: step 3\n");
         i_errno = IECREATESTREAM;
         free(sp->result);
         free(sp);
         return NULL;
     }
     if (unlink(template) < 0) {
+        printf("error: step 4\n");
         i_errno = IECREATESTREAM;
         free(sp->result);
         free(sp);
         return NULL;
     }
     if (ftruncate(sp->buffer_fd, test->settings->blksize) < 0) {
+        printf("error: step 5\n");
         i_errno = IECREATESTREAM;
         free(sp->result);
         free(sp);
@@ -3687,6 +3692,7 @@ iperf_new_stream(struct iperf_test *test, int s, int sender)
     }
     sp->buffer = (char *) mmap(NULL, test->settings->blksize, PROT_READ|PROT_WRITE, MAP_PRIVATE, sp->buffer_fd, 0);
     if (sp->buffer == MAP_FAILED) {
+        printf("error: step 6\n");
         i_errno = IECREATESTREAM;
         free(sp->result);
         free(sp);
