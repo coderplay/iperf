@@ -3676,13 +3676,14 @@ iperf_new_stream(struct iperf_test *test, int s, int sender)
         free(sp);
         return NULL;
     }
+    /*
     if (unlink(template) < 0) {
         printf("error: step 4\n");
         i_errno = IECREATESTREAM;
         free(sp->result);
         free(sp);
         return NULL;
-    }
+    }*/
     if (ftruncate(sp->buffer_fd, test->settings->blksize) < 0) {
         printf("error: step 5\n");
         i_errno = IECREATESTREAM;
